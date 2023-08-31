@@ -45,7 +45,7 @@
 
 ### Tarefas:
 
-#### Crie uma página (meus_objetivos.php) para exibir uma lista dos objetivos criados pelo usuário e seus resultados-chave associados.
+#### Crie uma página (meus_objetivos.php) para exibir uma lista dos objetivos criados pelo usuário e seus resultados-chave associados. 
 #### Implemente a funcionalidade PHP para recuperar os dados do banco de dados e exibi-los na página.
 
 ## Etapa 6: Estilização com HTML, CSS e JavaScript
