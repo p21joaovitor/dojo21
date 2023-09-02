@@ -2,31 +2,67 @@
 
 namespace App\Router;
 
-use App\Http\Controller\KeyResult;
-use App\Http\Controller\Objective;
-use App\Http\Controller\User;
+use App\Http\Controllers\HomeController;
 
-class Router
-{
-    public function route(){
-        session_start();
+class Router {
 
-        $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    public static function getURI() : array
+    {
+        $path_info = $_SERVER['REQUEST_URI'] ?? '/';
+        $routes = explode('/', $path_info);
+        unset($routes[0]);
 
-        if($url === '/user/login'){
-            (new User())->login();
+        return array_values($routes);
+    }
+
+    private static function processURI() : array
+    {
+        $controllerPart = self::getURI()[0] ?? '';
+        $methodPart = self::getURI()[1] ?? '';
+        $numParts = count(self::getURI());
+        $argsPart = [];
+
+        for ($i = 2; $i < $numParts; $i++) {
+            $argsPart[] = self::getURI()[$i] ?? '';
         }
 
-        if($url === '/user/save'){
-            (new User())->save();
+        $controller = !empty($controllerPart) ?
+            'App\\Http\\Controllers\\'. ucwords($controllerPart) . 'Controller' :
+            'App\\Http\\Controllers\\HomeController';
+
+        if ($controllerPart === 'keyresult') {
+            $controller = 'App\\Http\\Controllers\\KeyResultController';
         }
 
-        if($url === '/objective/save'){
-            (new Objective())->save();
+        $method = !empty($methodPart) ?
+            $methodPart :
+            'index';
+
+        $args = !empty($argsPart) ?
+            $argsPart :
+            [];
+
+        return [
+            'controller' => $controller,
+            'method' => $method,
+            'args' => $args
+        ];
+    }
+
+    public static function contentToRender()
+    {
+        $uri = self::processURI();
+
+        if (class_exists($uri['controller'])) {
+            $controller = $uri['controller'];
+            $method = $uri['method'];
+            $args = $uri['args'];
+
+            $args ? (new $controller)->{$method}(...$args) :
+                (new $controller)->{$method}();
+            die;
         }
 
-        if($url === '/key-results/save'){
-            (new KeyResult())->save();
-        }
+        (new HomeController)->{'fail'}();
     }
 }

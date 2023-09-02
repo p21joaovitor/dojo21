@@ -4,7 +4,7 @@ require_once "../vendor/autoload.php";
 
 session_start();
 
-use App\Http\Controller\KeyResult;
+use App\Http\Controllers\KeyResultController;
 use App\Model\KeyResultModel;
 use App\Model\ObjectiveModel;
 

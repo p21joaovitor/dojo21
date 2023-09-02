@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Http\Controller;
+namespace App\Http\Controllers;
 
 use App\Entity\KeyResultEntity;
 use App\Model\KeyResultModel;
 
-class KeyResult extends Controller
+class KeyResultController extends Controller
 {
-    public function save(){
+    public function index()
+    {
+        echo 'aki dentro do keyresults';
+    }
+    public function save()
+    {
         $isPost = $_SERVER['REQUEST_METHOD'];
 
         if ($isPost === 'POST') {

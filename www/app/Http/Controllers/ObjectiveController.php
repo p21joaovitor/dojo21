@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controller;
+namespace App\Http\Controllers;
 
 use App\Entity\ObjectiveEntity;
 use App\Model\ObjectiveModel;
 use App\Model\UserModel;
-use App\Http\Controller\Controller;
+use App\Http\Controllers\Controller;
 
-class Objective extends Controller
+class ObjectiveController extends Controller
 {
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];
