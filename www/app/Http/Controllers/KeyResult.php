@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Entity\KeyResultEntity;
 use App\Model\KeyResultModel;
 
-class KeyResultController extends Controller
+class KeyResult extends Controller
 {
     public function index()
     {

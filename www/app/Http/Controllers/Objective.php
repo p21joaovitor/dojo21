@@ -7,7 +7,7 @@ use App\Model\ObjectiveModel;
 use App\Model\UserModel;
 use App\Http\Controllers\Controller;
 
-class ObjectiveController extends Controller
+class Objective extends Controller
 {
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];

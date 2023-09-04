@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class HomeController extends Controller
+class Home extends Controller
 {
     public function index()
     {session_destroy();

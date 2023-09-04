@@ -1,14 +1,9 @@
 let Login = (() => {
-    let validateForm = () => {
-
-    }
 
     let handleForm = () => {
-        $('#login-form').submit(function (event) {
+        $('#btn_logar').on( "click", function() {
             event.preventDefault();
-            let loginForm = $(this).serialize();
-
-            validateForm();
+            let loginForm = $('#login_form').serialize();
 
             $.ajax({
                 url: '/user/login',
@@ -27,6 +22,7 @@ let Login = (() => {
         }
     }
 })();
+
 $(document).ready(() => {
    Login.init();
 });

@@ -2,7 +2,7 @@
 
 namespace App\Router;
 
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Home;
 
 class Router {
 
@@ -26,13 +26,11 @@ class Router {
             $argsPart[] = self::getURI()[$i] ?? '';
         }
 
-        $controller = !empty($controllerPart) ?
-            'App\\Http\\Controllers\\'. ucwords($controllerPart) . 'Controller' :
-            'App\\Http\\Controllers\\HomeController';
+        $controllerPart = self::convertName($controllerPart);
 
-        if ($controllerPart === 'keyresult') {
-            $controller = 'App\\Http\\Controllers\\KeyResultController';
-        }
+        $controller = !empty($controllerPart) ?
+            'App\\Http\\Controllers\\'. ucwords($controllerPart) :
+            'App\\Http\\Controllers\\Home';
 
         $method = !empty($methodPart) ?
             $methodPart :
@@ -63,6 +61,17 @@ class Router {
             die;
         }
 
-        (new HomeController)->{'fail'}();
+        (new Home)->{'fail'}();
+    }
+
+    /**
+     * @param $controller
+     * @return string
+     */
+    private static function convertName($controller): string
+    {
+        $string = str_replace('-', ' ', $controller);
+
+        return str_replace(' ', '', ucwords($string));
     }
 }

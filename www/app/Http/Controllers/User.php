@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\UserModel;
 use App\Http\Controllers\Controller;
 
-class UserController extends Controller
+class User extends Controller
 {
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];
