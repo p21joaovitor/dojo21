@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 
 class Objective extends Controller
 {
+    public function index()
+    {
+        return $this->view('Objective/index');
+    }
+
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];
 

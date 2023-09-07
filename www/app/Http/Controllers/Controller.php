@@ -28,6 +28,9 @@ abstract class Controller
           ],
           'Login/register' => [
               'title' => 'Register'
+          ],
+          'Home/index' => [
+              'title' => 'Home'
           ]
         ];
 
