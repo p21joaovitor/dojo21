@@ -1,19 +1,24 @@
 let User = (() => {
     let handleForm = () => {
-        $('#user-form').submit(function (event) {
-            let userForm = $(this).serialize();
-
+        $('#btn_register').on( "click", function() {
             event.preventDefault();
+            let registerForm = $('#register_form').serialize();
+
             $.ajax({
-                url: '/user/save',
+                url: 'save',
                 type: 'POST',
-                data: userForm,
+                data: registerForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-
-                    if(response.result !== 'success'){
-                        alert('Nome inválido ou não preenchido!');
+                    $("#response").empty();
+                    if (response.result === 'error') {
+                        $("#response").removeClass('d-none');
+                        $("#response").addClass('bg-danger');
+                        $("#response").append(response.message);
+                        return;
                     }
+                    window.location.href = '/home';
+                    return;
                 }
             });
         });

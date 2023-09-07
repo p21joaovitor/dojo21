@@ -16,6 +16,11 @@ h2, h3, h4 {
     margin-bottom: 5px;
 }
 
+hr {
+    border: darkgrey dashed 1px;
+    margin: 20px 0px 20px 0;
+}
+
 button, a {
     margin: 0;
     padding: 0;
@@ -41,6 +46,16 @@ button, a {
     margin-right: 5px;
 }
 
+.form-input {
+    padding-left: 50px;
+}
+
+.form-group {
+    display: block;
+    position: relative;
+    width: 250px;
+    text-align: left;
+}
 
 input[type=text], input[type=email], input[type=password] {
     padding: 4px 10px;
@@ -100,6 +115,25 @@ section {
     background-color: #ffffff;
 }
 
+.d-none {
+    visibility:hidden;
+}
+
+.card-alert {
+    border-radius: 5px;
+    padding: 20px;
+    width: 365px;
+    transition: all 0.3s ease-out;
+    color: black;
+    margin-top: -100px;
+    position: absolute;
+}
+
+.bg-danger {
+    background-color: rgba(240,128,128, 0.52);
+    /*s*/
+}
+
 .mt-10 {
     margin-top: 10px;
 }
@@ -142,4 +176,8 @@ section {
 
 .mt-200 {
     margin-top: 200px;
+}
+
+.m-auto {
+    margin: auto;
 }

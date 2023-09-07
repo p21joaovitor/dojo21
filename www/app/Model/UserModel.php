@@ -7,14 +7,15 @@ use App\Entity\User;
 
 class UserModel
 {
-    public function save($name, $email, $password){
+    public function save(User $user){
         $pdoConnection = (new DatabaseConnection())->getConnection();
+        $passwordEncryt = md5($user->password);
 
         /** @var $pdoConnection PDO */
         $statement = $pdoConnection->prepare("INSERT INTO user (name, email, password) values (:name, :email, :password)");
-        $statement->bindParam(':name', $name);
-        $statement->bindParam(':email', $email);
-        $statement->bindParam(':password', md5($password));
+        $statement->bindParam(':name', $user->name);
+        $statement->bindParam(':email', $user->email);
+        $statement->bindParam(':password', $passwordEncryt);
         $statement->execute();
     }
 
