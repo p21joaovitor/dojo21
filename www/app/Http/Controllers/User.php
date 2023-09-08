@@ -69,6 +69,16 @@ class User extends Controller
         ]);
     }
 
+    public function logout()
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+
+            header('Location: /');
+            exit;
+        }
+    }
+
     private function validatorForm($data, $method = null)
     {
         if (empty($data['name']) && $method) {

@@ -35,8 +35,8 @@ section {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    width: 100%;
-    margin: 0px 15px 0px 15px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .text-center {
@@ -112,6 +112,15 @@ input[type=text], input[type=email], input[type=password] {
     box-shadow: 7px 7px 13px 7px rgba(50, 50, 50, 0.52);
     padding: 30px;
     width: 400px;
+    transition: all 0.3s ease-out;
+    background-color: #ffffff;
+}
+
+.card-objective {
+    border-radius: 5px;
+    box-shadow: 2px 2px 25px 2px rgba(50, 50, 50, 0.52);
+    padding: 30px;
+    width: 200px;
     transition: all 0.3s ease-out;
     background-color: #ffffff;
 }

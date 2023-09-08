@@ -13,7 +13,7 @@ abstract class Controller
         exit;
     }
 
-    protected function view(string $view)
+    protected function view(string $view, $args = null)
     {
         $this->tittlePages($view);
         include_once '../app/Views/' . $view . '.phtml';

@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Entity\ObjectiveEntity;
 use App\Model\ObjectiveModel;
-use App\Model\UserModel;
 use App\Http\Controllers\Controller;
 
 class Objective extends Controller
 {
     public function index()
     {
-        return $this->view('Objective/index');
+        $objectiveModel = new ObjectiveModel();
+        $myObjective = $objectiveModel->list($_SESSION['user_id']);
+
+        return $this->view('Objective/index', $myObjective);
+    }
+
+    public function newObjective()
+    {
+        return $this->view('Objective/new-objective');
     }
 
     public function save(){

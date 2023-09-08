@@ -1,14 +1,24 @@
 let Objective = (() => {
     let handleForm = () => {
-        $('#objective-form').submit(function (event) {
-            let userForm = $(this).serialize();
+        $('#btn_register_objective').on( "click", function() {
             event.preventDefault();
+            let objectiveForm = $('#objective_form').serialize();
+
             $.ajax({
-                url: '/objective/save',
+                url: 'save',
                 type: 'POST',
-                data: userForm,
+                data: objectiveForm,
                 success: function (data) {
-                    window.location.href = 'tela_inicial.php';
+                    let response = JSON.parse(data);
+                    $("#response").empty();
+                    if (response.result === 'error') {
+                        $("#response").removeClass('d-none');
+                        $("#response").addClass('bg-danger');
+                        $("#response").append(response.message);
+                        return;
+                    }
+                    window.location.href = '/home';
+                    return;
                 }
             });
         });
