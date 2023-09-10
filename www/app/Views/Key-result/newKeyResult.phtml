@@ -1,0 +1,16 @@
+<?php include_once '../app/Views/Layout/mainHome.phtml'?>
+
+    <section class="container mt-20 row">
+        <div class="card mt-200">
+            <div class="card-alert d-none" id="response"></div>
+            <h2>Novo resultado chave</h2>
+                <?php include_once '_formKeyResult.phtml'?>
+                <div class="btn-group text-center">
+                    <a href="#" id="btn_register_key_result" class="btn">Cadastrar</a>
+                    <a href="/key-result/list/<?php echo $args['objective_id'] ?>" class="btn">Voltar</a>
+                </div>
+
+        </div>
+    </section>
+<script src="../../../assets/js/key-results.js" type="text/javascript"></script>
+<?php include_once '../app/Views/Layout/mainEnd.phtml'?>

@@ -1,0 +1,16 @@
+<form method="POST" id="objective_form">
+    <input type="hidden" name="id"
+           value="<?php echo array_key_exists('objective', $args) ? $args['objective'][0]['id'] : '' ?>">
+    <div class="form-group">
+        <label for="title" class="form-group-label">Título: </label>
+        <input type="text" placeholder="Título do seu objetivo" id="title" name="title" required
+        value="<?php echo array_key_exists('objective', $args) ? $args['objective'][0]['title'] : '' ?>">
+    </div>
+    <div class="form-group">
+        <label for="description" class="text-left">Descrição: </label>
+        <textarea id="description" name="description" rows="4">
+            <?php echo array_key_exists('objective', $args) ? $args['objective'][0]['description'] : '' ?>
+        </textarea>
+    </div>
+    <hr>
+</form>

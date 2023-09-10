@@ -6,10 +6,30 @@ use App\Entity\Entity;
 
 class ObjectiveEntity extends Entity
 {
+    public const EM_PROGRESSO = 0;
+    public const FINALIZADO = 1;
+
+    private $id;
     private $user;
     private $title;
     private $description;
     private $status;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return mixed

@@ -1,0 +1,27 @@
+<form method="POST" id="key_result_form">
+    <input type="hidden" name="objective_id"
+           value="<?php echo array_key_exists('objective_id', $args) ? $args['objective_id'] : $args['keyResult'][0]['objective_id'] ?>">
+    <input type="hidden" name="id"
+           value="<?php echo array_key_exists('keyResult', $args) ? $args['keyResult'][0]['id'] : '' ?>">
+    <div class="form-group">
+        <label for="title" class="form-group-label">Título: </label>
+        <input type="text" placeholder="Título do seu objetivo" id="title" name="title"
+               value="<?php echo array_key_exists('keyResult', $args) ? $args['keyResult'][0]['title'] : '' ?>" required>
+    </div>
+    <div class="form-group">
+        <label for="type" class="form-group-label">Tipo: </label>
+        <select id="type" name="type">
+            <option <?php echo array_key_exists('keyResult', $args)
+            && $args['keyResult'][0]['type'] == 1 ? 'selected' : '' ?> value="1">Milestone</option>
+            <option <?php echo array_key_exists('keyResult', $args)
+            && $args['keyResult'][0]['type'] == 2 ? 'selected' : '' ?> value="2">Porcentagem</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description" class="text-left">Descrição: </label>
+        <textarea id="description" name="description" rows="4">
+            <?php echo array_key_exists('keyResult', $args) ? $args['keyResult'][0]['description'] : '' ?>
+        </textarea>
+    </div>
+    <hr>
+</form>

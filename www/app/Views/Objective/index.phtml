@@ -1,17 +1,35 @@
 <?php include_once '../app/Views/Layout/mainHome.phtml'?>
 
 <section class="container mt-20">
-    <div class="btn-group">
+    <div class="btn-group align-left">
         <a href="/objective/newObjective" class="btn">Novo objetivo</a>
     </div>
     <hr>
 
-    <?php //foreach (): ?>
-        <div class="card-objective">
+    <div class="cards">
+        <?php foreach ($args['objective'] as $objective): ?>
+            <div class="card-objective">
 
-        </div>
-    <?php //endforeach; ?>
+                <h3><?php echo $objective['title'] ?></h3>
+                <p>Clique no botão abaixo para ver os resultados chaves de seu objetivo.</p>
+                <p><b>Status: </b><?php echo $objective['status'] == 0 ? 'Em progresso' : 'Finalizado' ?></p>
+                <hr>
+                <div class="btn-group align-center">
+                    <a href="/key-result/list/<?php echo $objective['id'] ?>" class="btn">Detalhes</a>
+                    <a href="/objective/edit/<?php echo $objective['id'] ?>" class="btn">Editar</a>
+                    <a href="/objective/finishObjective/<?php echo $objective['id'] ?>" class="btn">Finalizar</a>
+                </div>
+                <div class="btn-group align-center">
+                    <?php if ($objective['deleted_at'] === null): ?>
+                        <a href="/objective/remove/<?php echo $objective['id'] ?>" class="btn-danger">Apagar</a>
+                    <?php else: ?>
+                        <a href="/objective/restoreObjective/<?php echo $objective['id'] ?>" class="btn-danger">Restaurar</a>
+                    <?php endif;?>
+                </div>
 
+            </div>
+        <?php endforeach; ?>
+    </div>
 </section>
 
 <?php include_once '../app/Views/Layout/mainEnd.phtml'?>

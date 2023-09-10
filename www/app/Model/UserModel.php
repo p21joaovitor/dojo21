@@ -4,45 +4,53 @@ namespace App\Model;
 
 use App\Entity\DatabaseConnection;
 use App\Entity\User;
+use App\Util\Message;
+use PDO;
 
-class UserModel
+class UserModel extends Model
 {
     public function save(User $user){
-        $pdoConnection = (new DatabaseConnection())->getConnection();
         $passwordEncryt = md5($user->password);
 
         /** @var $pdoConnection PDO */
-        $statement = $pdoConnection->prepare("INSERT INTO user (name, email, password) values (:name, :email, :password)");
+        $statement = $this->getConn()->prepare("INSERT INTO user (name, email, password) values (:name, :email, :password)");
         $statement->bindParam(':name', $user->name);
         $statement->bindParam(':email', $user->email);
         $statement->bindParam(':password', $passwordEncryt);
         $statement->execute();
     }
 
-    public function authenticate(User $user): bool
+    public function authenticate(User $user): array|bool
     {
         session_destroy();
-        $pdoConnection = (new DatabaseConnection())->getConnection();
         $password = md5($user->password);
 
-        $statement = $pdoConnection->prepare("SELECT * FROM user WHERE email = :email");
+        $statement = $this->getConn()->prepare("SELECT * FROM user WHERE email = :email");
         $statement->bindParam(':email', $user->email);
-
-        if(!$statement->execute()) {
-            session_destroy();
-            return false;
-        }
+        $statement->execute();
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
+        if (!$result) {
+            return [
+                'error' => true,
+                'message' => Message::REGISTER_NOT_FOUND
+            ];
+        }
+
         if ($result['password'] != $password) {
-            return false;
+            return [
+                'error' => true,
+                'message' => Message::INCORRECT_PASSWORD
+            ];
         }
 
         session_start();
 
         $_SESSION['user_id'] = $result['id'];
 
-        return true;
+        return [
+            'error' => false
+        ];
     }
 }

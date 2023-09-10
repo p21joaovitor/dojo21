@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../../assets/css/style.css?v=<?= time() ?>">
-    <title>OKR <?php echo  '- ' . $_SESSION['title']; ?></title>
+    <title>OKR <?php echo  '- ' . $args['title']; ?></title>
     <script src="../../../assets/jQuery/jquery-3.7.0.min.js" type="text/javascript"></script>
 </head>
 <body>
@@ -24,9 +24,8 @@
     </div>
 
     <div class="nav-links">
-        <a href="/home">Home</a>
-        <a href="/objective">My objective</a>
-        <a href="http://stackoverflow.com/users/4084003/">My key results</a>
+        <a href="/home">Inicio</a>
+        <a href="/objective">Objetivos</a>
         <a href="/user/logout">Sair</a>
     </div>
 </div>

@@ -43,6 +43,14 @@ section {
     text-align: center;
 }
 
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
 .text-muted {
     color: darkgrey;
 }
@@ -68,6 +76,8 @@ input[type=text], input[type=email], input[type=password] {
 }
 
 .btn-group {
+    display: flex;
+    flex-direction: row;
     margin: 5px;
     padding: 5px;
 }
@@ -86,22 +96,53 @@ input[type=text], input[type=email], input[type=password] {
     background-color: #00709e
 }
 
+.btn-danger {
+    background-color: #f57d22;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    margin: 7px;
+    font-size: 16px;
+}
+
+.btn-danger:hover {
+    background-color: #f56e0f
+}
+
+.btn-success {
+    background-color: #20851a;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    margin: 7px;
+    font-size: 16px;
+}
+
+.btn-success:hover {
+    background-color: #165b12
+}
+
+.align-left {
+    justify-content: left;
+}
+
+.align-center {
+    justify-content: center;
+}
+
 .meus-objetivos {
     align-items: center;
 }
 
-.objetivo {
-    padding: 5px;
-    margin: 5px;
-    background-color: #e3e3e3;
-    border-radius: 5px;
-}
-
-.objetivo, ul {
-    margin: 10px;
-}
-
 .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cards {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,8 +162,10 @@ input[type=text], input[type=email], input[type=password] {
     box-shadow: 2px 2px 25px 2px rgba(50, 50, 50, 0.52);
     padding: 30px;
     width: 200px;
+    height: 250px;
     transition: all 0.3s ease-out;
     background-color: #ffffff;
+    margin: 5px 10px 5px 10px;
 }
 
 .d-none {
@@ -141,7 +184,10 @@ input[type=text], input[type=email], input[type=password] {
 
 .bg-danger {
     background-color: rgba(240,128,128, 0.52);
-    /*s*/
+}
+
+.bg-success {
+    background-color: rgba(0,128,0, 0.52);
 }
 
 .mt-10 {
@@ -278,5 +324,31 @@ input[type=text], input[type=email], input[type=password] {
     .nav > #nav-check:checked ~ .nav-links {
         height: calc(100vh - 50px);
         overflow-y: auto;
+    }
+
+    .cards {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .card {
+        border-radius: 5px;
+        box-shadow: 7px 7px 13px 7px rgba(50, 50, 50, 0.52);
+        padding: 20px;
+        width: 200px;
+        transition: all 0.3s ease-out;
+        background-color: #ffffff;
+    }
+
+    .card-alert {
+        border-radius: 5px;
+        padding: 15px;
+        width: 265px;
+        transition: all 0.3s ease-out;
+        color: black;
+        margin-top: -100px;
+        position: absolute;
     }
 }

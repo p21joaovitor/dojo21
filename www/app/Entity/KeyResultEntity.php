@@ -7,10 +7,24 @@ use App\Entity\Entity;
 
 class KeyResultEntity extends Entity
 {
+    private $id;
     private $title;
     private $description;
     private $type;
-    private $objectiveId;
+    private $objectiveId;/**
+ *
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }/**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return mixed

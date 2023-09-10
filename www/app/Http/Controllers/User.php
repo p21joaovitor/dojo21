@@ -10,7 +10,10 @@ class User extends Controller
 {
     public function register()
     {
-        return $this->view('Login/register');
+        $data = [
+            'title' => 'Registrar'
+        ];
+        return $this->view('Login/register', $data);
     }
 
     public function save(){
@@ -62,7 +65,14 @@ class User extends Controller
         $user->password = $_POST['password'];
 
         $userModel = new UserModel();
-        $userModel->authenticate($user);
+        $auth = $userModel->authenticate($user);
+
+        if ($auth['error']) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => $auth['message']
+            ]);
+        }
 
         $this->sendJson([
             'result' => 'success',

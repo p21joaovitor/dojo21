@@ -10,13 +10,13 @@ let Login = (() => {
                 data: loginForm,
                 success: function (data) {
                     let response = JSON.parse(data);
+                    $("#response").empty();
                     if (response.result === 'error') {
                         $("#response").removeClass('d-none');
                         $("#response").addClass('bg-danger');
                         $("#response").append(response.message);
                         return;
                     }
-                    console.log('aki');
                     window.location.href = '/home';
                     return;
                 }

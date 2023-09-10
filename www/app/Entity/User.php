@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-class User extends DatabaseConnection
+class User extends DataBase
 {
     public $email;
     public $password;
