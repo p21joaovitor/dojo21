@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+/**
+ * @author João Vitor Botelho
+ * Controller inicial do sistema
+ */
 class Home extends Controller
 {
+    /**
+     * Função principal de exibição do sistema de acordo com a sessão
+     * @return null
+     */
     public function index()
     {
         if (isset($_SESSION['user_id'])) {

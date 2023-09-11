@@ -6,7 +6,8 @@ use PDO;
 use PDOException;
 
 /**
- * Base class to connect with mysql
+ * @author João Vitor Botelho
+ * Classe responsavel por conectar ao banco de dados
  */
 class DataBase
 {

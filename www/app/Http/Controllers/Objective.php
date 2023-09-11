@@ -6,6 +6,10 @@ use App\Entity\ObjectiveEntity;
 use App\Model\ObjectiveModel;
 use App\Util\Message;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelo fluxo do objective do usuario
+ */
 class Objective extends Controller
 {
     /** @var ObjectiveModel */
@@ -16,6 +20,10 @@ class Objective extends Controller
         $this->setObjectiveModel(new ObjectiveModel());
     }
 
+    /**
+     * Função principal do controller que faz a exibição da view de listagem
+     * @return null
+     */
     public function index()
     {
         $objectiveModel = new ObjectiveModel();
@@ -28,6 +36,10 @@ class Objective extends Controller
         return $this->view('Objective/index', $data);
     }
 
+    /**
+     * Função para a exibição da view de novo objective
+     * @return null
+     */
     public function newObjective()
     {
         $data = [
@@ -36,26 +48,39 @@ class Objective extends Controller
         return $this->view('Objective/newObjective', $data);
     }
 
+    /**
+     * Função responsavel por salvar os dados de um novo objective
+     * @return void
+     */
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];
 
-        if ($isPost === 'POST') {
-            $title = $_POST['title'] ?: '';
-            $description = $_POST['description'] ?: '';
-
-            $objective = new ObjectiveEntity();
-            $objective->setUser($_SESSION['user_id']);
-            $objective->setTitle($title);
-            $objective->setDescription($description);
-
-            (new ObjectiveModel())->save($objective);
-
+        if ($isPost !== 'POST') {
             $this->sendJson([
-                'result' => 'success',
+                'result' => 'error',
+                'message' => Message::NOT_A_POST
             ]);
         }
+
+        $this->validatorFormObjective($_POST);
+
+        $objective = new ObjectiveEntity();
+        $objective->setUser($_SESSION['user_id']);
+        $objective->setTitle($_POST['title']);
+        $objective->setDescription($_POST['description']);
+
+        (new ObjectiveModel())->save($objective);
+
+        $this->sendJson([
+            'result' => 'success',
+        ]);
     }
 
+    /**
+     * Função responsavel por exibir a view de edição do objective
+     * @param int $id
+     * @return null
+     */
     public function edit(int $id)
     {
         $objectivetModel = $this->getObjectiveModel();
@@ -69,6 +94,10 @@ class Objective extends Controller
         return $this->view('Objective/editObjective', $data);
     }
 
+    /**
+     * Função para salvar os dados da edição
+     * @return void
+     */
     public function update()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -79,6 +108,8 @@ class Objective extends Controller
                 'message' => Message::NOT_A_POST
             ]);
         }
+
+        $this->validatorFormObjective($_POST);
 
         $objectiveEntity = new ObjectiveEntity();
         $objectiveEntity->setId($_POST['id']);
@@ -101,6 +132,11 @@ class Objective extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por exibir a view de finalização do objective
+     * @param int $id
+     * @return null
+     */
     public function finishObjective(int $id)
     {
         $objectiveModel = $this->getObjectiveModel();
@@ -114,6 +150,10 @@ class Objective extends Controller
         return $this->view('Objective/finish', $data);
     }
 
+    /**
+     * Função responsavel por salvar os dados de finalização
+     * @return void
+     */
     public function finish()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -145,6 +185,11 @@ class Objective extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por exibir a view de remoção do objective
+     * @param int $id
+     * @return null
+     */
     public function remove(int $id)
     {
         $objectiveModel = $this->getObjectiveModel();
@@ -158,6 +203,10 @@ class Objective extends Controller
         return $this->view('Objective/removeObjective', $data);
     }
 
+    /**
+     * Função responsavel por salvar os dados da remoção
+     * @return void
+     */
     public function delete()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -188,6 +237,11 @@ class Objective extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por exibir a view de restauração do objective
+     * @param int $id
+     * @return null
+     */
     public function restoreObjective(int $id)
     {
         $objectiveModel = $this->getObjectiveModel();
@@ -201,6 +255,10 @@ class Objective extends Controller
         return $this->view('Objective/restoreObjective', $data);
     }
 
+    /**
+     * Função responsavel por salvar os dados de restauração
+     * @return void
+     */
     public function restore()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -245,5 +303,22 @@ class Objective extends Controller
     public function setObjectiveModel(ObjectiveModel $objectiveModel): void
     {
         $this->objectiveModel = $objectiveModel;
+    }
+
+    private function validatorFormObjective($data, $method = null)
+    {
+        if (empty($data['title'])) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => Message::TITLE_REQUIRED
+            ]);
+        }
+
+        if (empty($data['description'])) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => Message::DESCRIPTION_REQUIRED
+            ]);
+        }
     }
 }

@@ -7,6 +7,10 @@ use App\Model\KeyResultModel;
 use App\Model\ObjectiveModel;
 use App\Util\Message;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelo fluxo do key result do usuario
+ */
 class KeyResult extends Controller
 {
     /** @var KeyResultModel */
@@ -21,6 +25,11 @@ class KeyResult extends Controller
         $this->setObjectiveModel(new ObjectiveModel());
     }
 
+    /**
+     * Função para exibir a view de listagem para o usuario
+     * @param int $id
+     * @return null
+     */
     public function list(int $id)
     {
         $keyResultModel = $this->getKeyResultModel();
@@ -38,6 +47,11 @@ class KeyResult extends Controller
         return $this->view('Key-result/index', $data);
     }
 
+    /**
+     * Função para exibir a view de criação de um novo key result
+     * @param int $id
+     * @return null
+     */
     public function newKeyResult(int $id)
     {
         $data = [
@@ -47,19 +61,11 @@ class KeyResult extends Controller
 
         return $this->view('Key-result/newKeyResult', $data);
     }
-    public function edit(int $id)
-    {
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResult = $keyResultModel->findKeyResult($id);
 
-        $data = [
-            'title' => 'Editando resultado chaves',
-            'keyResult' => $keyResult
-        ];
-
-        return $this->view('Key-result/editKeyResult', $data);
-    }
-
+    /**
+     * Função responsavel por salvar os dados de um novo key result
+     * @return void
+     */
     public function save()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -70,6 +76,8 @@ class KeyResult extends Controller
                 'message' => Message::NOT_A_POST
             ]);
         }
+
+        $this->validatorFormKeyResult($_POST);
 
         $keyResultEntity = new KeyResultEntity();
         $keyResultEntity->setDescription($_POST['description']);
@@ -93,6 +101,28 @@ class KeyResult extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por exibir a view de edição de um key result
+     * @param int $id
+     * @return null
+     */
+    public function edit(int $id)
+    {
+        $keyResultModel = $this->getKeyResultModel();
+        $keyResult = $keyResultModel->findKeyResult($id);
+
+        $data = [
+            'title' => 'Editando resultado chaves',
+            'keyResult' => $keyResult
+        ];
+
+        return $this->view('Key-result/editKeyResult', $data);
+    }
+
+    /**
+     * Função responsavel por salvar os dados editados
+     * @return void
+     */
     public function update()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -103,6 +133,8 @@ class KeyResult extends Controller
                 'message' => Message::NOT_A_POST
             ]);
         }
+
+        $this->validatorFormKeyResult($_POST);
 
         $keyResultEntity = new KeyResultEntity();
         $keyResultEntity->setId($_POST['id']);
@@ -127,6 +159,11 @@ class KeyResult extends Controller
         ]);
     }
 
+    /**
+     * Função de exibição da view de remoção do key result
+     * @param int $id
+     * @return null
+     */
     public function remove(int $id)
     {
         $keyResultModel = $this->getKeyResultModel();
@@ -140,6 +177,10 @@ class KeyResult extends Controller
         return $this->view('Key-result/removeKeyResult', $data);
     }
 
+    /**
+     * Função que salva a remoção do key result
+     * @return void
+     */
     public function delete()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -172,6 +213,11 @@ class KeyResult extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por exibir a view de restauração do key result
+     * @param int $id
+     * @return null
+     */
     public function restoreKeyResult(int $id)
     {
         $keyResultModel = $this->getKeyResultModel();
@@ -185,6 +231,10 @@ class KeyResult extends Controller
         return $this->view('Key-result/restoreKeyResult', $data);
     }
 
+    /**
+     * Função para salvar a restauração do key result
+     * @return void
+     */
     public function restore()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -246,5 +296,35 @@ class KeyResult extends Controller
     public function setObjectiveModel($objectiveModel): void
     {
         $this->objectiveModel = $objectiveModel;
+    }
+
+    /**
+     * Função responsavel por validar os dados do formulario do keyresult
+     * @param $data
+     * @param $method
+     * @return void
+     */
+    private function validatorFormKeyResult($data, $method = null)
+    {
+        if (empty($data['title'])) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => Message::TITLE_REQUIRED
+            ]);
+        }
+
+        if (empty($data['type'])) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => Message::TYPE_REQUIRED
+            ]);
+        }
+
+        if (empty($data['description'])) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => Message::DESCRIPTION_REQUIRED
+            ]);
+        }
     }
 }

@@ -4,8 +4,15 @@ namespace App\Router;
 
 use App\Http\Controllers\Home;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelo gerenciamento das rotas
+ */
 class Router {
 
+    /**
+     * @return array
+     */
     public static function getURI() : array
     {
         $path_info = $_SERVER['REQUEST_URI'] ?? '/';
@@ -15,6 +22,9 @@ class Router {
         return array_values($routes);
     }
 
+    /**
+     * @return array
+     */
     private static function processURI() : array
     {
         $controllerPart = self::getURI()[0] ?? '';
@@ -47,6 +57,9 @@ class Router {
         ];
     }
 
+    /**
+     * @return void
+     */
     public static function contentToRender()
     {
         $uri = self::processURI();

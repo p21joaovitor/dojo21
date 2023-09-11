@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+/**
+ * @author João Vitor Botelho
+ * Classe generica de controller que contem as funções usadas pelos controllers
+ */
 abstract class Controller
 {
     /**
@@ -13,6 +17,12 @@ abstract class Controller
         exit;
     }
 
+    /**
+     * Função responsavel por gerenciar a view que vai ser exibida
+     * @param string $view
+     * @param array $args
+     * @return void
+     */
     protected function view(string $view, array $args = [])
     {
         include_once '../app/Views/' . $view . '.phtml';

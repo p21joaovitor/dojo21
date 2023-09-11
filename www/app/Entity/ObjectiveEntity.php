@@ -4,15 +4,38 @@ namespace App\Entity;
 
 use App\Entity\Entity;
 
+/**
+ * @author João Vitor Botelho
+ * Entity responsavel pelo objeto Objective
+ */
 class ObjectiveEntity extends Entity
 {
     public const EM_PROGRESSO = 0;
     public const FINALIZADO = 1;
 
+    /**
+     * @var $id
+     */
     private $id;
+
+    /**
+     * @var $user
+     */
     private $user;
+
+    /**
+     * @var $title
+     */
     private $title;
+
+    /**
+     * @var $description
+     */
     private $description;
+
+    /**
+     * @var $status
+     */
     private $status;
 
     /**

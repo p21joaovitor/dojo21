@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use App\Entity\Entity;
 
-
+/**
+ * @author João Vitor Botelho
+ * Entity responsavel pelo objeto keyResult
+ */
 class KeyResultEntity extends Entity
 {
     private $id;

@@ -6,8 +6,16 @@ use App\Model\UserModel;
 use App\Util\Message;
 use App\Util\Validator;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelo fluxo do usuario desde sua criação até o gerenciamento de sua sessão no sistema
+ */
 class User extends Controller
 {
+    /**
+     * Função responsavel por exibir a view de registro de um novo usuario
+     * @return null
+     */
     public function register()
     {
         $data = [
@@ -16,6 +24,10 @@ class User extends Controller
         return $this->view('Login/register', $data);
     }
 
+    /**
+     * Função responsavel por salvar os dados de um novo usuario
+     * @return void
+     */
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];
         $validator = new Validator();
@@ -26,14 +38,14 @@ class User extends Controller
                 'message' => Message::NOT_A_POST
             ]);
         }
-        $this->validatorForm($_POST, true);
+        $this->validatorFormUser($_POST, true);
 
         $user = new \App\Entity\User();
-        $user->name = $_POST['name'];
-        $user->email = $_POST['email'];
-        $user->password = $_POST['password'];
+        $user->setName($_POST['name']);
+        $user->setEmail($_POST['email']);
+        $user->setPassword($_POST['password']);
 
-        if(!$validator->checkPassword($user->password, $_POST['confirmPassword'])){
+        if(!$validator->checkPassword($user->getPassword(), $_POST['confirmPassword'])){
             $this->sendJson([
                 'result' => 'error',
                 'message' => Message::DIFFERENT_PASSWORD
@@ -47,6 +59,10 @@ class User extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por realizar o login do usuario
+     * @return void
+     */
     public function login()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -58,11 +74,11 @@ class User extends Controller
             ]);
         }
 
-        $this->validatorForm($_POST);
+        $this->validatorFormUser($_POST);
 
         $user = new \App\Entity\User();
-        $user->email = $_POST['email'];
-        $user->password = $_POST['password'];
+        $user->setEmail($_POST['email']);
+        $user->setPassword($_POST['password']);
 
         $userModel = new UserModel();
         $auth = $userModel->authenticate($user);
@@ -79,6 +95,10 @@ class User extends Controller
         ]);
     }
 
+    /**
+     * Função responsavel por dar logout do usuario do sistema
+     * @return void
+     */
     public function logout()
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
@@ -89,7 +109,13 @@ class User extends Controller
         }
     }
 
-    private function validatorForm($data, $method = null)
+    /**
+     * Função responsavel por validar os dados do formulario de usuarios
+     * @param $data
+     * @param $method
+     * @return void
+     */
+    private function validatorFormUser($data, $method = null)
     {
         if (empty($data['name']) && $method) {
             $this->sendJson([

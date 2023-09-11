@@ -2,6 +2,10 @@
 
 namespace App\Util;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelas mensagens do sistema
+ */
 class Message
 {
     public const NAME_REQUIRED = 'Forneça um nome!';
@@ -15,4 +19,7 @@ class Message
     public const NOT_RESTORE = 'Falha ao restaurar!';
     public const REGISTER_NOT_FOUND = 'Registro não encontrado!';
     public const INCORRECT_PASSWORD = 'Senha incorreta!';
+    public const TITLE_REQUIRED = 'Forneça um título!';
+    public const DESCRIPTION_REQUIRED = 'Forneça uma descrição!';
+    public const TYPE_REQUIRED = 'Forneça um tipo!';
 }

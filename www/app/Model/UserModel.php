@@ -9,25 +9,37 @@ use PDO;
 
 class UserModel extends Model
 {
+    /**
+     * Função responsavel por salvar os dados de um novo usuario
+     * @param User $user
+     * @return void
+     */
     public function save(User $user){
-        $passwordEncryt = md5($user->password);
+        $passwordEncryt = md5($user->getPassword());
 
         /** @var $pdoConnection PDO */
         $statement = $this->getConn()->prepare("INSERT INTO user (name, email, password) values (:name, :email, :password)");
-        $statement->bindParam(':name', $user->name);
-        $statement->bindParam(':email', $user->email);
-        $statement->bindParam(':password', $passwordEncryt);
-        $statement->execute();
+        $statement->execute([
+            ':name' => $user->getName(),
+            ':email' =>  $user->getEmail(),
+            ':password' => $passwordEncryt
+        ]);
     }
 
+    /**
+     * Função responsavel por realizar a validação para o login do usuario
+     * @param User $user
+     * @return array|bool
+     */
     public function authenticate(User $user): array|bool
     {
         session_destroy();
-        $password = md5($user->password);
+        $password = md5($user->getPassword());
 
         $statement = $this->getConn()->prepare("SELECT * FROM user WHERE email = :email");
-        $statement->bindParam(':email', $user->email);
-        $statement->execute();
+        $statement->execute([
+            ':email' =>  $user->getEmail()
+        ]);
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
