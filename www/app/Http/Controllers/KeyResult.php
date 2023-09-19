@@ -78,17 +78,8 @@ class KeyResult extends Controller
         }
 
         $this->validatorFormKeyResult($_POST);
-
-        $keyResultEntity = new KeyResultEntity();
-        $keyResultEntity->setDescription($_POST['description']);
-        $keyResultEntity->setType($_POST['type']);
-        $keyResultEntity->setTitle($_POST['title']);
-        $keyResultEntity->setObjectiveId($_POST['objective_id']);
-
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResultId = $keyResultModel->save($keyResultEntity);
-
-        if (!$keyResultId) {
+        $keyResult = $this->getKeyResultModel()->save($_POST);
+        if (!$keyResult) {
             $this->sendJson([
                 'result' => 'error',
                 'message' => Message::NOT_SAVE

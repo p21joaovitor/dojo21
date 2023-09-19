@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Entity\DatabaseConnection;
 use App\Entity\KeyResultEntity;
 use App\Entity\ObjectiveEntity;
+use App\Repository\KeyResultRepository;
 
 /**
  * @author João Vitor Botelho
@@ -13,21 +14,34 @@ use App\Entity\ObjectiveEntity;
 class KeyResultModel extends Model
 {
     /**
+     * @var KeyResultRepository
+     */
+    private $keyResultRepository;
+
+    public function __construct()
+    {
+        $this->setKeyResultRepository(new KeyResultRepository());
+    }
+
+    /**
      * @param KeyResultEntity $keyResultEntity
      * @return false|string
      */
-    public function save(KeyResultEntity $keyResultEntity){
+    public function save($data)
+    {
+        $keyResultEntity = new KeyResultEntity();
+        $keyResultEntity->setDescription($data['description']);
+        $keyResultEntity->setType($data['type']);
+        $keyResultEntity->setTitle($data['title']);
+        $keyResultEntity->setObjectiveId($data['objective_id']);
 
-        /** @var $pdoConnection PDO */
-        $statement = $this->getConn()->prepare("INSERT INTO key_result (objective_id, title, description, `type`) VALUES (:objective_id, :title, :description, :type)");
-        $statement->execute([
-            ':objective_id' => $keyResultEntity->getObjectiveId(),
-            ':title' =>  $keyResultEntity->getTitle(),
-            ':description' => $keyResultEntity->getDescription(),
-            ':type' => $keyResultEntity->getType()
-        ]);
+        $keyResultId = $this->getKeyResultRepository()->save($keyResultEntity);
 
-        return $this->getConn()->lastInsertId();
+        if (!$keyResultId) {
+            return false;
+        }
+
+        return $keyResultEntity->getObjectiveId();
     }
 
     /**
@@ -115,5 +129,21 @@ class KeyResultModel extends Model
         ]);
 
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKeyResultRepository()
+    {
+        return $this->keyResultRepository;
+    }
+
+    /**
+     * @param mixed $keyResultRepository
+     */
+    public function setKeyResultRepository($keyResultRepository): void
+    {
+        $this->keyResultRepository = $keyResultRepository;
     }
 }

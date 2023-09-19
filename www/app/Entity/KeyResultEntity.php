@@ -14,8 +14,9 @@ class KeyResultEntity extends Entity
     private $title;
     private $description;
     private $type;
-    private $objectiveId;/**
- *
+    private $objectiveId;
+
+    /**
      * @return mixed
      */
     public function getId()
