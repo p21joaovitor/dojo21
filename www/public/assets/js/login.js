@@ -3,18 +3,19 @@ let Login = (() => {
         $('#btn_logar').on( "click", function() {
             event.preventDefault();
             let loginForm = $('#login_form').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
-                url: 'user/login',
+                url: 'auth/authenticate',
                 type: 'POST',
                 data: loginForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
                     window.location.href = '/home';

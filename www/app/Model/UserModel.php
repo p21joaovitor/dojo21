@@ -36,12 +36,7 @@ class UserModel extends Model
         session_destroy();
         $password = md5($user->getPassword());
 
-        $statement = $this->getConn()->prepare("SELECT * FROM user WHERE email = :email");
-        $statement->execute([
-            ':email' =>  $user->getEmail()
-        ]);
 
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if (!$result) {
             return [
