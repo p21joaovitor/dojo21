@@ -1,10 +1,10 @@
 <?php include_once '../app/Views/Layout/mainHome.phtml'?>
 
     <section class="container mt-20">
-        <h3><?php echo $args['objective'][0]['title']; ?></h3>
-        <p><?php echo $args['objective'][0]['description']; ?></p>
+        <h3><?php echo $args['objective']['title']; ?></h3>
+        <p><?php echo $args['objective']['description']; ?></p>
         <div class="btn-group">
-            <a href="/key-result/newKeyResult/<?php echo $args['objective'][0]['id']?>" class="btn">Novo resultado chave</a>
+            <a href="/key-result-views/newKeyResult/<?php echo $args['objective']['id']?>" class="btn">Novo resultado chave</a>
         </div>
         <hr>
 
@@ -20,11 +20,11 @@
                         <p><?php echo $keyResult['description'] ?></p>
                         <hr>
                         <div class="btn-group">
-                            <a href="/key-result/edit/<?php echo $keyResult['id'] ?>" class="btn">Editar</a>
+                            <a href="/key-result-views/edit/<?php echo $keyResult['id'] ?>" class="btn">Editar</a>
                             <?php if ($keyResult['deleted_at'] === null): ?>
-                                <a href="/key-result/remove/<?php echo $keyResult['id'] ?>" class="btn-danger">Apagar</a>
+                                <a href="/key-result-views/remove/<?php echo $keyResult['id'] ?>" class="btn-danger">Apagar</a>
                             <?php else: ?>
-                                <a href="/key-result/restoreKeyResult/<?php echo $keyResult['id'] ?>" class="btn-danger">Restaurar</a>
+                                <a href="/key-result-views/restoreKeyResult/<?php echo $keyResult['id'] ?>" class="btn-danger">Restaurar</a>
                             <?php endif;?>
                         </div>
                     </div>

@@ -3,14 +3,14 @@
     <section class="container mt-20 row">
         <div class="card mt-200">
             <div class="card-alert d-none" id="response"></div>
-            <input type="hidden" value="<?php echo $args['keyResult'][0]['id']?>" name="id" id="key_result_id">
+            <input type="hidden" value="<?php echo $args['keyResult']['id']?>" name="id" id="key_result_id">
             <h2>Removendo resultado chave</h2>
-            <p><b>Título:</b> <?php echo $args['keyResult'][0]['title'] ?></p>
+            <p><b>Título:</b> <?php echo $args['keyResult']['title'] ?></p>
             <p>Deseja realmente remover esse resultado chave?</p>
 
             <div class="btn-group text-center">
                 <a href="#" id="btn_remove_key_result" class="btn-danger">Sim</a>
-                <a href="/key-result/list/<?php echo $args['keyResult'][0]['objective_id'] ?>" class="btn">Não</a>
+                <a href="/key-result-views/list/<?php echo $args['keyResult']['objective_id'] ?>" class="btn">Não</a>
             </div>
 
         </div>

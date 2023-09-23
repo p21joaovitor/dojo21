@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Util\Message;
+use App\Util\Validator;
 
 class AuthModel extends Model
 {
@@ -13,9 +14,15 @@ class AuthModel extends Model
      */
     private $userRepository;
 
+    /**
+     * @var Validator
+     */
+    private $validator;
+
     public function __construct()
     {
         $this->setUserRepository(new UserRepository());
+        $this->setValidator(new Validator());
     }
 
     /** Função responsavel por realizar a validação para o login do usuario
@@ -35,7 +42,8 @@ class AuthModel extends Model
                 'message' => Message::REGISTER_NOT_FOUND
             ];
         }
-        if ($result['password'] != $password) {
+
+        if (!$this->getValidator()->checkPassword($result['password'], $password)) {
             return [
                 'error' => true,
                 'message' => Message::INCORRECT_PASSWORD
@@ -67,4 +75,19 @@ class AuthModel extends Model
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * @return Validator
+     */
+    public function getValidator(): Validator
+    {
+        return $this->validator;
+    }
+
+    /**
+     * @param Validator $validator
+     */
+    public function setValidator(Validator $validator): void
+    {
+        $this->validator = $validator;
+    }
 }

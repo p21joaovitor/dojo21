@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Entity\ObjectiveEntity;
 use App\Model\ObjectiveModel;
 use App\Util\Message;
+use App\Util\Validator;
 
 /**
  * @author João Vitor Botelho
@@ -15,37 +16,15 @@ class Objective extends Controller
     /** @var ObjectiveModel */
     private $objectiveModel;
 
+    /**
+     * @var Validator
+     */
+    private $validator;
+
     public function __construct()
     {
         $this->setObjectiveModel(new ObjectiveModel());
-    }
-
-    /**
-     * Função principal do controller que faz a exibição da view de listagem
-     * @return null
-     */
-    public function index()
-    {
-        $objectiveModel = new ObjectiveModel();
-        $myObjective = $objectiveModel->list($_SESSION['user_id']);
-
-        $data = [
-          'title' => 'Meus Objetivos',
-          'objective' => $myObjective
-        ];
-        return $this->view('Objective/index', $data);
-    }
-
-    /**
-     * Função para a exibição da view de novo objective
-     * @return null
-     */
-    public function newObjective()
-    {
-        $data = [
-            'title' => 'Novo Objetivo'
-        ];
-        return $this->view('Objective/newObjective', $data);
+        $this->setValidator(new Validator());
     }
 
     /**
@@ -62,36 +41,27 @@ class Objective extends Controller
             ]);
         }
 
-        $this->validatorFormObjective($_POST);
+        $validator = $this->getValidator()->validatorFormObjective($_POST);
 
-        $objective = new ObjectiveEntity();
-        $objective->setUser($_SESSION['user_id']);
-        $objective->setTitle($_POST['title']);
-        $objective->setDescription($_POST['description']);
+        if ($validator['result'] === 'error') {
+            $this->sendJson([
+                'result' => $validator['result'],
+                'message' => $validator['message']
+            ]);
+        }
 
-        (new ObjectiveModel())->save($objective);
+        $register = $this->getObjectiveModel()->save($validator['objective']);
+
+        if ($register['error']) {
+            $this->sendJson([
+                'result' => 'error',
+                'message' => $register['message']
+            ]);
+        }
 
         $this->sendJson([
             'result' => 'success',
         ]);
-    }
-
-    /**
-     * Função responsavel por exibir a view de edição do objective
-     * @param int $id
-     * @return null
-     */
-    public function edit(int $id)
-    {
-        $objectivetModel = $this->getObjectiveModel();
-        $objective = $objectivetModel->findObjective($id);
-
-        $data = [
-            'title' => 'Editando objetivo',
-            'objective' => $objective
-        ];
-
-        return $this->view('Objective/editObjective', $data);
     }
 
     /**
@@ -109,20 +79,21 @@ class Objective extends Controller
             ]);
         }
 
-        $this->validatorFormObjective($_POST);
+        $validator = $this->getValidator()->validatorFormObjective($_POST);
 
-        $objectiveEntity = new ObjectiveEntity();
-        $objectiveEntity->setId($_POST['id']);
-        $objectiveEntity->setDescription($_POST['description']);
-        $objectiveEntity->setTitle($_POST['title']);
+        if ($validator['result'] === 'error') {
+            $this->sendJson([
+                'result' => $validator['result'],
+                'message' => $validator['message']
+            ]);
+        }
 
-        $objectiveModel = $this->getObjectiveModel();
-        $update = $objectiveModel->update($objectiveEntity);
+        $update = $this->getObjectiveModel()->update($validator['objective']);
 
-        if (!$update) {
+        if ($update['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_SAVE
+                'message' => $update['message']
             ]);
         }
 
@@ -130,24 +101,6 @@ class Objective extends Controller
             'result' => 'success',
             'message' => Message::SAVED_SUCCESSFULLY
         ]);
-    }
-
-    /**
-     * Função responsavel por exibir a view de finalização do objective
-     * @param int $id
-     * @return null
-     */
-    public function finishObjective(int $id)
-    {
-        $objectiveModel = $this->getObjectiveModel();
-        $objective = $objectiveModel->findObjective($id);
-
-        $data = [
-            'title' => 'Finalizando o objetivo',
-            'objective' => $objective
-        ];
-
-        return $this->view('Objective/finish', $data);
     }
 
     /**
@@ -165,42 +118,18 @@ class Objective extends Controller
             ]);
         }
 
-        $objectiveEntity = new ObjectiveEntity();
-        $objectiveEntity->setId($_POST['id']);
-        $objectiveEntity->setStatus(ObjectiveEntity::FINALIZADO);
+        $finish = $this->getObjectiveModel()->finish($_POST);
 
-        $objectiveModel = $this->getObjectiveModel();
-        $update = $objectiveModel->finish($objectiveEntity);
-
-        if (!$update) {
+        if ($finish['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_SAVE
+                'message' => $finish['message']
             ]);
         }
 
         $this->sendJson([
-            'result' => 'success',
-            'message' => Message::SAVED_SUCCESSFULLY
+            'result' => 'success'
         ]);
-    }
-
-    /**
-     * Função responsavel por exibir a view de remoção do objective
-     * @param int $id
-     * @return null
-     */
-    public function remove(int $id)
-    {
-        $objectiveModel = $this->getObjectiveModel();
-        $objective = $objectiveModel->findObjective($id);
-
-        $data = [
-            'title' => 'Removendo o objetivo',
-            'objective' => $objective
-        ];
-
-        return $this->view('Objective/removeObjective', $data);
     }
 
     /**
@@ -218,41 +147,18 @@ class Objective extends Controller
             ]);
         }
 
-        $objectivetEntity = new ObjectiveEntity();
-        $objectivetEntity->setId($_POST['id']);
+        $delete = $this->getObjectiveModel()->delete($_POST);
 
-        $objectiveModel = $this->getObjectiveModel();
-        $remove = $objectiveModel->delete($objectivetEntity);
-
-        if (!$remove) {
+        if ($delete['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_DELETED
+                'message' => $delete['message']
             ]);
         }
 
         $this->sendJson([
-            'result' => 'success',
-            'message' => Message::SAVED_SUCCESSFULLY
+            'result' => 'success'
         ]);
-    }
-
-    /**
-     * Função responsavel por exibir a view de restauração do objective
-     * @param int $id
-     * @return null
-     */
-    public function restoreObjective(int $id)
-    {
-        $objectiveModel = $this->getObjectiveModel();
-        $objective = $objectiveModel->findObjective($id);
-
-        $data = [
-            'title' => 'Restaurando objetivo',
-            'objective' => $objective
-        ];
-
-        return $this->view('Objective/restoreObjective', $data);
     }
 
     /**
@@ -270,22 +176,17 @@ class Objective extends Controller
             ]);
         }
 
-        $objectivetEntity = new ObjectiveEntity();
-        $objectivetEntity->setId($_POST['id']);
+        $restore = $this->getObjectiveModel()->restore($_POST);
 
-        $objectiveModel = $this->getObjectiveModel();
-        $restore = $objectiveModel->restore($objectivetEntity);
-
-        if (!$restore) {
+        if ($restore['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_DELETED
+                'message' => $restore['message']
             ]);
         }
 
         $this->sendJson([
-            'result' => 'success',
-            'message' => Message::SAVED_SUCCESSFULLY
+            'result' => 'success'
         ]);
     }
 
@@ -305,20 +206,19 @@ class Objective extends Controller
         $this->objectiveModel = $objectiveModel;
     }
 
-    private function validatorFormObjective($data, $method = null)
+    /**
+     * @return Validator
+     */
+    public function getValidator(): Validator
     {
-        if (empty($data['title'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::TITLE_REQUIRED
-            ]);
-        }
+        return $this->validator;
+    }
 
-        if (empty($data['description'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::DESCRIPTION_REQUIRED
-            ]);
-        }
+    /**
+     * @param Validator $validator
+     */
+    public function setValidator(Validator $validator): void
+    {
+        $this->validator = $validator;
     }
 }

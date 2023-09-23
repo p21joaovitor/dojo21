@@ -3,6 +3,22 @@ let User = (() => {
         $('#btn_register').on( "click", function() {
             event.preventDefault();
             let registerForm = $('#register_form').serialize();
+            let responseDiv = $("#response");
+            responseDiv.empty();
+
+            if (!validatorEmail(email.value)) {
+                responseDiv.removeClass('d-none');
+                responseDiv.addClass('bg-danger');
+                responseDiv.append('Favor fornecer um e-mail valido!');
+                return;
+            }
+
+            if (!passwordSize(password.value)) {
+                responseDiv.removeClass('d-none');
+                responseDiv.addClass('bg-danger');
+                responseDiv.append('A senha deve conter no mínimo 6 dígitos!');
+                return;
+            }
 
             $.ajax({
                 url: 'save',
@@ -10,18 +26,32 @@ let User = (() => {
                 data: registerForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
                     window.location.href = '/home';
-                    return;
                 }
             });
         });
+
+        function validatorEmail(email)
+        {
+            let regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+            return regex.test(email);
+        }
+
+        function passwordSize(password)
+        {
+            if (password.length < 6) {
+                return false
+            }
+
+            return true;
+        }
     }
 
     return {

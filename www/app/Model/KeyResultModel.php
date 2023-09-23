@@ -6,6 +6,8 @@ use App\Entity\DatabaseConnection;
 use App\Entity\KeyResultEntity;
 use App\Entity\ObjectiveEntity;
 use App\Repository\KeyResultRepository;
+use App\Util\Message;
+use App\Util\Validator;
 
 /**
  * @author João Vitor Botelho
@@ -14,6 +16,11 @@ use App\Repository\KeyResultRepository;
 class KeyResultModel extends Model
 {
     /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
      * @var KeyResultRepository
      */
     private $keyResultRepository;
@@ -21,114 +28,124 @@ class KeyResultModel extends Model
     public function __construct()
     {
         $this->setKeyResultRepository(new KeyResultRepository());
+        $this->setValidator(new Validator());
     }
 
     /**
      * @param KeyResultEntity $keyResultEntity
-     * @return false|string
+     * @return array|integer
      */
-    public function save($data)
+    public function save(KeyResultEntity $keyResultEntity)
     {
-        $keyResultEntity = new KeyResultEntity();
-        $keyResultEntity->setDescription($data['description']);
-        $keyResultEntity->setType($data['type']);
-        $keyResultEntity->setTitle($data['title']);
-        $keyResultEntity->setObjectiveId($data['objective_id']);
+        $save = $this->getKeyResultRepository()->save($keyResultEntity);
 
-        $keyResultId = $this->getKeyResultRepository()->save($keyResultEntity);
-
-        if (!$keyResultId) {
-            return false;
+        if (!$save) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_SAVE
+            ];
         }
 
-        return $keyResultEntity->getObjectiveId();
+        return [
+            'error' => false,
+            'objective' => $keyResultEntity->getObjectiveId()
+        ];
     }
 
     /**
      * @param KeyResultEntity $keyResultEntity
-     * @return bool
+     * @return array
      */
     public function update(KeyResultEntity $keyResultEntity)
     {
-        $statement = $this->getConn()->prepare("UPDATE key_result SET objective_id = :objective_id, title = :title, description = :description, `type` = :type, updated_at = NOW() WHERE id = :id");
+        $keyResult = $this->getKeyResultRepository()->findKeyResult($keyResultEntity->getId());
+        $alteracao = $this->getValidator()->checkChangeKeyresult($keyResult, $keyResultEntity);
 
-        $statement->execute([
-            ':objective_id' => $keyResultEntity->getObjectiveId(),
-            ':title' =>  $keyResultEntity->getTitle(),
-            ':description' => $keyResultEntity->getDescription(),
-            ':type' => $keyResultEntity->getType(),
-            ':id' => $keyResultEntity->getId()
-        ]);
-
-        if ($statement->rowCount()) {
-            return true;
+        if ($alteracao['result'] === 'error') {
+            return [
+                'error' => true,
+                'message' => Message::RECORD_NOT_CHANGED
+            ];
         }
 
-        return false;
+        $update = $this->getKeyResultRepository()->update($keyResultEntity);
+
+        if (!$update) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_SAVE
+            ];
+        }
+
+        return [
+            'error' => false
+        ];
     }
 
     /**
-     * @param KeyResultEntity $keyResultEntity
-     * @return bool
+     * @param $data
+     * @return array
      */
-    public function delete(KeyResultEntity $keyResultEntity)
+    public function delete($data)
     {
-        $statement = $this->getConn()->prepare("UPDATE key_result SET deleted_at = NOW() WHERE id = :id");
+        $keyResultEntity = new KeyResultEntity();
+        $keyResultEntity->setId($data['id']);
 
-        $statement->execute([
-            ':id' => $keyResultEntity->getId()
-        ]);
+        $keyResult = $this->getKeyResultRepository()->findKeyResult($keyResultEntity->getId());
 
-        if ($statement->rowCount()) {
-            return true;
+        if (!$keyResult) {
+            return [
+                'error' => true,
+                'message' => Message::REGISTER_NOT_FOUND
+            ];
         }
 
-        return false;
+        $delete = $this->getKeyResultRepository()->delete($keyResultEntity);
+
+        if (!$delete) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_DELETED
+            ];
+        }
+
+        return [
+            'error' => false,
+            'objective_id' => $keyResult['objective_id']
+        ];
     }
 
     /**
-     * @param KeyResultEntity $keyResultEntity
-     * @return bool
+     * @param $data
+     * @return array
      */
-    public function restore(KeyResultEntity $keyResultEntity)
+    public function restore($data)
     {
-        $statement = $this->getConn()->prepare("UPDATE key_result SET deleted_at = null WHERE id = :id");
+        $keyResultEntity = new KeyResultEntity();
+        $keyResultEntity->setId($data['id']);
 
-        $statement->execute([
-            ':id' => $keyResultEntity->getId()
-        ]);
+        $keyResult = $this->getKeyResultRepository()->findKeyResult($keyResultEntity->getId());
 
-        if ($statement->rowCount()) {
-            return true;
+        if (!$keyResult) {
+            return [
+                'error' => true,
+                'message' => Message::REGISTER_NOT_FOUND
+            ];
         }
 
-        return false;
-    }
+        $delete = $this->getKeyResultRepository()->restore($keyResultEntity);
 
-    /**
-     * @param int $objectiveId
-     * @return array|false
-     */
-    public function list(int $objectiveId) {
-        $statement = $this->getConn()->prepare("SELECT * FROM key_result WHERE key_result.objective_id = :objectiveId");
-        $statement->execute([
-            ':objectiveId' => $objectiveId
-        ]);
+        if (!$delete) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_RESTORE
+            ];
+        }
 
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * @param $id
-     * @return array|false
-     */
-    public function findKeyResult($id) {
-        $statement = $this->getConn()->prepare("SELECT * FROM key_result WHERE key_result.id = :id");
-        $statement->execute([
-            ':id' => $id
-        ]);
-
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return [
+            'error' => false,
+            'objective_id' => $keyResult['objective_id']
+        ];
     }
 
     /**
@@ -145,5 +162,21 @@ class KeyResultModel extends Model
     public function setKeyResultRepository($keyResultRepository): void
     {
         $this->keyResultRepository = $keyResultRepository;
+    }
+
+    /**
+     * @return Validator
+     */
+    public function getValidator(): Validator
+    {
+        return $this->validator;
+    }
+
+    /**
+     * @param Validator $validator
+     */
+    public function setValidator(Validator $validator): void
+    {
+        $this->validator = $validator;
     }
 }

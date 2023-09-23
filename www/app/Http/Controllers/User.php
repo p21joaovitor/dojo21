@@ -13,6 +13,22 @@ use App\Util\Validator;
 class User extends Controller
 {
     /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
+     * @var UserModel
+     */
+    private $userModel;
+
+    public function __construct()
+    {
+        $this->setUserModel(new UserModel());
+        $this->setValidator(new Validator());
+    }
+
+    /**
      * Função responsavel por exibir a view de registro de um novo usuario
      * @return null
      */
@@ -30,42 +46,6 @@ class User extends Controller
      */
     public function save(){
         $isPost = $_SERVER['REQUEST_METHOD'];
-        $validator = new Validator();
-
-        if ($isPost !== 'POST') {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::NOT_A_POST
-            ]);
-        }
-        $this->validatorFormUser($_POST, true);
-
-        $user = new \App\Entity\User();
-        $user->setName($_POST['name']);
-        $user->setEmail($_POST['email']);
-        $user->setPassword($_POST['password']);
-
-        if(!$validator->checkPassword($user->getPassword(), $_POST['confirmPassword'])){
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::DIFFERENT_PASSWORD
-            ]);
-        }
-
-        (new UserModel())->save($user);
-
-        $this->sendJson([
-            'result' => 'success',
-        ]);
-    }
-
-    /**
-     * Função responsavel por realizar o login do usuario
-     * @return void
-     */
-    public function login()
-    {
-        $isPost = $_SERVER['REQUEST_METHOD'];
 
         if ($isPost !== 'POST') {
             $this->sendJson([
@@ -74,19 +54,21 @@ class User extends Controller
             ]);
         }
 
-        $this->validatorFormUser($_POST);
+        $validator = $this->getValidator()->userForm($_POST, true);
 
-        $user = new \App\Entity\User();
-        $user->setEmail($_POST['email']);
-        $user->setPassword($_POST['password']);
+        if ($validator['result'] === 'error') {
+            $this->sendJson([
+                'result' => $validator['result'],
+                'message' => $validator['message']
+            ]);
+        }
 
-        $userModel = new UserModel();
-        $auth = $userModel->authenticate($user);
+        $register = $this->getUserModel()->save($validator['user'], $_POST['confirmPassword']);
 
-        if ($auth['error']) {
+        if ($register['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => $auth['message']
+                'message' => $register['message']
             ]);
         }
 
@@ -96,46 +78,34 @@ class User extends Controller
     }
 
     /**
-     * Função responsavel por dar logout do usuario do sistema
-     * @return void
+     * @return Validator
      */
-    public function logout()
+    public function getValidator(): Validator
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_destroy();
-
-            header('Location: /');
-            exit;
-        }
+        return $this->validator;
     }
 
     /**
-     * Função responsavel por validar os dados do formulario de usuarios
-     * @param $data
-     * @param $method
-     * @return void
+     * @param Validator $validator
      */
-    private function validatorFormUser($data, $method = null)
+    public function setValidator(Validator $validator): void
     {
-        if (empty($data['name']) && $method) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::NAME_REQUIRED
-            ]);
-        }
+        $this->validator = $validator;
+    }
 
-        if (empty($data['email'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::EMAIL_REQUIRED
-            ]);
-        }
+    /**
+     * @return UserModel
+     */
+    public function getUserModel(): UserModel
+    {
+        return $this->userModel;
+    }
 
-        if (empty($data['password'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::PASSWORD_REQUIRED
-            ]);
-        }
+    /**
+     * @param UserModel $userModel
+     */
+    public function setUserModel(UserModel $userModel): void
+    {
+        $this->userModel = $userModel;
     }
 }

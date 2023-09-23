@@ -4,60 +4,66 @@ namespace App\Model;
 
 use App\Entity\DatabaseConnection;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Util\Message;
+use App\Util\Validator;
 use PDO;
 
 class UserModel extends Model
 {
     /**
-     * Função responsavel por salvar os dados de um novo usuario
-     * @param User $user
-     * @return void
+     * @var UserRepository
      */
-    public function save(User $user){
-        $passwordEncryt = md5($user->getPassword());
+    private $userRepository;
 
-        /** @var $pdoConnection PDO */
-        $statement = $this->getConn()->prepare("INSERT INTO user (name, email, password) values (:name, :email, :password)");
-        $statement->execute([
-            ':name' => $user->getName(),
-            ':email' =>  $user->getEmail(),
-            ':password' => $passwordEncryt
-        ]);
+    public function __construct()
+    {
+        $this->setUserRepository(new UserRepository());
     }
 
     /**
-     * Função responsavel por realizar a validação para o login do usuario
+     * Função responsavel por salvar os dados de um novo usuario
      * @param User $user
-     * @return array|bool
+     * @return array
      */
-    public function authenticate(User $user): array|bool
+    public function save(User $user)
     {
-        session_destroy();
-        $password = md5($user->getPassword());
+        $result = $this->getUserRepository()->getUserByEmail($user->getEmail());
 
-
-
-        if (!$result) {
+        if ($result) {
             return [
                 'error' => true,
-                'message' => Message::REGISTER_NOT_FOUND
+                'message' => Message::EMAIL_ALREADY_REGISTERED
             ];
         }
 
-        if ($result['password'] != $password) {
+        $register = $this->getUserRepository()->save($user);
+
+        if (!$register) {
             return [
                 'error' => true,
-                'message' => Message::INCORRECT_PASSWORD
+                'message' => Message::NOT_SAVE
             ];
         }
-
-        session_start();
-
-        $_SESSION['user_id'] = $result['id'];
 
         return [
             'error' => false
         ];
+    }
+
+    /**
+     * @return UserRepository
+     */
+    public function getUserRepository(): UserRepository
+    {
+        return $this->userRepository;
+    }
+
+    /**
+     * @param UserRepository $userRepository
+     */
+    public function setUserRepository(UserRepository $userRepository): void
+    {
+        $this->userRepository = $userRepository;
     }
 }

@@ -22,4 +22,6 @@ class Message
     public const TITLE_REQUIRED = 'Forneça um título!';
     public const DESCRIPTION_REQUIRED = 'Forneça uma descrição!';
     public const TYPE_REQUIRED = 'Forneça um tipo!';
+    public const EMAIL_ALREADY_REGISTERED = 'O e-mail utilizado já se encontra em nossos registros!';
+    public const RECORD_NOT_CHANGED = 'Nenhum dado para ser modificado!';
 }

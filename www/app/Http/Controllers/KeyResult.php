@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Entity\KeyResultEntity;
 use App\Model\KeyResultModel;
-use App\Model\ObjectiveModel;
 use App\Util\Message;
+use App\Util\Validator;
 
 /**
  * @author João Vitor Botelho
@@ -16,50 +16,13 @@ class KeyResult extends Controller
     /** @var KeyResultModel */
     private $keyResultModel;
 
-    /** @var ObjectiveModel */
-    private $objectiveModel;
+    /** @var Validator */
+    private $validator;
 
     public function __construct()
     {
         $this->setKeyResultModel(new KeyResultModel());
-        $this->setObjectiveModel(new ObjectiveModel());
-    }
-
-    /**
-     * Função para exibir a view de listagem para o usuario
-     * @param int $id
-     * @return null
-     */
-    public function list(int $id)
-    {
-        $keyResultModel = $this->getKeyResultModel();
-        $objectiveModel = $this->getObjectiveModel();
-
-        $keyResult = $keyResultModel->list($id);
-        $objctive = $objectiveModel->findObjective($id);
-
-        $data = [
-          'title' => 'Resultados chaves',
-          'keyResults' => $keyResult,
-          'objective' => $objctive
-        ];
-
-        return $this->view('Key-result/index', $data);
-    }
-
-    /**
-     * Função para exibir a view de criação de um novo key result
-     * @param int $id
-     * @return null
-     */
-    public function newKeyResult(int $id)
-    {
-        $data = [
-            'title' => 'Novo resultado chaves',
-            'objective_id' => $id
-        ];
-
-        return $this->view('Key-result/newKeyResult', $data);
+        $this->setValidator(new Validator());
     }
 
     /**
@@ -77,37 +40,28 @@ class KeyResult extends Controller
             ]);
         }
 
-        $this->validatorFormKeyResult($_POST);
-        $keyResult = $this->getKeyResultModel()->save($_POST);
-        if (!$keyResult) {
+        $validator = $this->getValidator()->validatorFormKeyResult($_POST);
+
+        if ($validator['result'] === 'error') {
+            $this->sendJson([
+                'result' => $validator['result'],
+                'message' => $validator['message']
+            ]);
+        }
+
+        $save = $this->getKeyResultModel()->save($validator['keyResult']);
+
+        if ($save['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_SAVE
+                'message' => $save['message']
             ]);
         }
 
         $this->sendJson([
             'result' => 'success',
-            'objectiveId' => $keyResultEntity->getObjectiveId()
+            'objectiveId' => $save['objective']
         ]);
-    }
-
-    /**
-     * Função responsavel por exibir a view de edição de um key result
-     * @param int $id
-     * @return null
-     */
-    public function edit(int $id)
-    {
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResult = $keyResultModel->findKeyResult($id);
-
-        $data = [
-            'title' => 'Editando resultado chaves',
-            'keyResult' => $keyResult
-        ];
-
-        return $this->view('Key-result/editKeyResult', $data);
     }
 
     /**
@@ -125,22 +79,21 @@ class KeyResult extends Controller
             ]);
         }
 
-        $this->validatorFormKeyResult($_POST);
+        $validator = $this->getValidator()->validatorFormKeyResult($_POST, true);
 
-        $keyResultEntity = new KeyResultEntity();
-        $keyResultEntity->setId($_POST['id']);
-        $keyResultEntity->setDescription($_POST['description']);
-        $keyResultEntity->setType($_POST['type']);
-        $keyResultEntity->setTitle($_POST['title']);
-        $keyResultEntity->setObjectiveId($_POST['objective_id']);
+        if ($validator['result'] === 'error') {
+            $this->sendJson([
+                'result' => $validator['result'],
+                'message' => $validator['message']
+            ]);
+        }
 
-        $keyResultModel = $this->getKeyResultModel();
-        $update = $keyResultModel->update($keyResultEntity);
+        $update = $this->getKeyResultModel()->update($validator['keyResult']);
 
-        if (!$update) {
+        if ($update['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_SAVE
+                'message' => $update['message']
             ]);
         }
 
@@ -148,24 +101,6 @@ class KeyResult extends Controller
             'result' => 'success',
             'message' => Message::SAVED_SUCCESSFULLY
         ]);
-    }
-
-    /**
-     * Função de exibição da view de remoção do key result
-     * @param int $id
-     * @return null
-     */
-    public function remove(int $id)
-    {
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResult = $keyResultModel->findKeyResult($id);
-
-        $data = [
-            'title' => 'Removendo resultado chave',
-            'keyResult' => $keyResult
-        ];
-
-        return $this->view('Key-result/removeKeyResult', $data);
     }
 
     /**
@@ -183,43 +118,20 @@ class KeyResult extends Controller
             ]);
         }
 
-        $keyResultEntity = new KeyResultEntity();
-        $keyResultEntity->setId($_POST['id']);
+        $remove = $this->getKeyResultModel()->delete($_POST);
 
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResult = $keyResultModel->findKeyResult($_POST['id']);
-        $remove = $keyResultModel->delete($keyResultEntity);
-
-        if (!$remove) {
+        if ($remove['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_DELETED
+                'message' => Message::REGISTER_NOT_FOUND
             ]);
         }
 
         $this->sendJson([
             'result' => 'success',
-            'objectiveId' => $keyResult[0]['objective_id'],
+            'objectiveId' => $remove['objective_id'],
             'message' => Message::SAVED_SUCCESSFULLY
         ]);
-    }
-
-    /**
-     * Função responsavel por exibir a view de restauração do key result
-     * @param int $id
-     * @return null
-     */
-    public function restoreKeyResult(int $id)
-    {
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResult = $keyResultModel->findKeyResult($id);
-
-        $data = [
-            'title' => 'Restaurando resultado chave',
-            'keyResult' => $keyResult
-        ];
-
-        return $this->view('Key-result/restoreKeyResult', $data);
     }
 
     /**
@@ -237,23 +149,18 @@ class KeyResult extends Controller
             ]);
         }
 
-        $keyResultEntity = new KeyResultEntity();
-        $keyResultEntity->setId($_POST['id']);
+        $restore = $this->getKeyResultModel()->restore($_POST);
 
-        $keyResultModel = $this->getKeyResultModel();
-        $keyResult = $keyResultModel->findKeyResult($_POST['id']);
-        $restore = $keyResultModel->restore($keyResultEntity);
-
-        if (!$restore) {
+        if ($restore['error']) {
             $this->sendJson([
                 'result' => 'error',
-                'message' => Message::NOT_DELETED
+                'message' => Message::REGISTER_NOT_FOUND
             ]);
         }
 
         $this->sendJson([
             'result' => 'success',
-            'objectiveId' => $keyResult[0]['objective_id'],
+            'objectiveId' => $restore['objective_id'],
             'message' => Message::SAVED_SUCCESSFULLY
         ]);
     }
@@ -274,48 +181,18 @@ class KeyResult extends Controller
     }
 
     /**
-     * @return mixed
+     * @return Validator
      */
-    public function getObjectiveModel()
+    public function getValidator(): Validator
     {
-        return $this->objectiveModel;
+        return $this->validator;
     }
 
     /**
-     * @param mixed $objectiveModel
+     * @param Validator $validator
      */
-    public function setObjectiveModel($objectiveModel): void
+    public function setValidator(Validator $validator): void
     {
-        $this->objectiveModel = $objectiveModel;
-    }
-
-    /**
-     * Função responsavel por validar os dados do formulario do keyresult
-     * @param $data
-     * @param $method
-     * @return void
-     */
-    private function validatorFormKeyResult($data, $method = null)
-    {
-        if (empty($data['title'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::TITLE_REQUIRED
-            ]);
-        }
-
-        if (empty($data['type'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::TYPE_REQUIRED
-            ]);
-        }
-
-        if (empty($data['description'])) {
-            $this->sendJson([
-                'result' => 'error',
-                'message' => Message::DESCRIPTION_REQUIRED
-            ]);
-        }
+        $this->validator = $validator;
     }
 }

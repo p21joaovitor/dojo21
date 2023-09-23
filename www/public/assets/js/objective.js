@@ -3,22 +3,23 @@ let Objective = (() => {
         $('#btn_register_objective').on( "click", function() {
             event.preventDefault();
             let objectiveForm = $('#objective_form').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
-                url: 'save',
+                url: '/objective/save',
                 type: 'POST',
                 data: objectiveForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
-                    window.location.href = '/objective';
-                    return;
+                    window.location.href = '/objective-views';
                 }
             });
         });
@@ -26,6 +27,7 @@ let Objective = (() => {
         $('#btn_edit_objective').on( "click", function() {
             event.preventDefault();
             let objectiveForm = $('#objective_form').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/objective/update',
@@ -33,18 +35,18 @@ let Objective = (() => {
                 data: objectiveForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    $("#response").removeClass('d-none');
-                    $("#response").addClass('bg-success');
-                    $("#response").append(response.message);
-                    return;
+                    responseDiv.removeClass('d-none');
+                    responseDiv.addClass('bg-success');
+                    responseDiv.append(response.message);
                     return;
                 }
             });
@@ -53,6 +55,7 @@ let Objective = (() => {
         $('#btn_remove_objective').on( "click", function() {
             event.preventDefault();
             let objectiveId = $('#objective_id').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/objective/delete',
@@ -60,16 +63,16 @@ let Objective = (() => {
                 data: objectiveId,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    window.location.href = '/objective';
-                    return;
+                    window.location.href = '/objective-views';
                 }
             });
         });
@@ -77,6 +80,7 @@ let Objective = (() => {
         $('#btn_restore_objective').on( "click", function() {
             event.preventDefault();
             let objectiveId = $('#objective_id').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/objective/restore',
@@ -84,16 +88,16 @@ let Objective = (() => {
                 data: objectiveId,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    window.location.href = '/objective';
-                    return;
+                    window.location.href = '/objective-views';
                 }
             });
         });
@@ -101,6 +105,7 @@ let Objective = (() => {
         $('#btn_finish_objective').on( "click", function() {
             event.preventDefault();
             let objectiveId = $('#objective_id').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/objective/finish',
@@ -108,16 +113,16 @@ let Objective = (() => {
                 data: objectiveId,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    window.location.href = '/objective';
-                    return;
+                    window.location.href = '/objective-views';
                 }
             });
         });

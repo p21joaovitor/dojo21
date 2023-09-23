@@ -4,6 +4,9 @@ namespace App\Model;
 
 use App\Entity\DatabaseConnection;
 use App\Entity\ObjectiveEntity;
+use App\Repository\ObjectiveRepository;
+use App\Util\Message;
+use App\Util\Validator;
 use PDO;
 
 /**
@@ -12,121 +15,160 @@ use PDO;
  */
 class ObjectiveModel extends Model
 {
-    /**
-     * @param ObjectiveEntity $objective
-     * @return void
-     */
-    public function save(ObjectiveEntity $objective){
-
-        /** @var $pdoConnection PDO */
-        $statement = $this->getConn()->prepare("INSERT INTO objective (user_id, title, description) values (:user_id, :title, :description)");
-        $statement->execute([
-            ':user_id' => $objective->getUser(),
-            ':title' =>  $objective->getTitle(),
-            ':description' => $objective->getDescription(),
-        ]);
-    }
 
     /**
-     * @param int $userId
-     * @return array|false
+     * @var Validator
      */
-    public function list(int $userId) {
-        $statement = $this->getConn()->prepare("SELECT * FROM objective WHERE objective.user_id = :user_id");
-        $statement->bindParam(':user_id', $userId);
-        $statement->execute();
-
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
+    private $validator;
 
     /**
-     * @param int $objectiveId
-     * @return array|false
+     * @var ObjectiveRepository
      */
-    public function findObjective(int $objectiveId) {
-        $statement = $this->getConn()->prepare("SELECT * FROM objective WHERE objective.id = :id");
-        $statement->bindParam(':id', $objectiveId);
-        $statement->execute();
+    private $objectiveRepository;
 
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    public function __construct()
+    {
+        $this->setValidator(new Validator());
+        $this->setObjectiveRepository(new ObjectiveRepository());
     }
 
     /**
      * @param ObjectiveEntity $objectiveEntity
-     * @return bool
+     * @return array
      */
+    public function save(ObjectiveEntity $objectiveEntity)
+    {
+        $save = $this->getObjectiveRepository()->save($objectiveEntity);
+
+        if (!$save) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_SAVE
+            ];
+        }
+
+        return [
+            'error' => false
+        ];
+    }
+
     public function update(ObjectiveEntity $objectiveEntity)
     {
-        $statement = $this->getConn()->prepare("UPDATE objective SET title = :title, description = :description, updated_at = NOW() WHERE id = :id");
+        $objective = $this->getObjectiveRepository()->findObjective($objectiveEntity->getId());
+        $alteracao = $this->getValidator()->checkChangeObjective($objective, $objectiveEntity);
 
-        $statement->execute([
-            ':title' =>  $objectiveEntity->getTitle(),
-            ':description' => $objectiveEntity->getDescription(),
-            ':id' => $objectiveEntity->getId()
-        ]);
-
-        if ($statement->rowCount()) {
-            return true;
+        if ($alteracao['result'] === 'error') {
+            return [
+                'error' => true,
+                'message' => Message::RECORD_NOT_CHANGED
+            ];
         }
 
-        return false;
+        $update = $this->getObjectiveRepository()->update($objectiveEntity);
+
+        if (!$update) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_SAVE
+            ];
+        }
+
+        return [
+            'error' => false
+        ];
     }
 
     /**
-     * @param ObjectiveEntity $objectiveEntity
-     * @return bool
+     * @param $data
+     * @return array
      */
-    public function delete(ObjectiveEntity $objectiveEntity)
+    public function finish($data)
     {
-        $statement = $this->getConn()->prepare("UPDATE objective SET deleted_at = NOW() WHERE id = :id");
+        $objectiveEntity = new ObjectiveEntity();
+        $objectiveEntity->setId($data['id']);
+        $objectiveEntity->setStatus(ObjectiveEntity::FINALIZADO);
 
-        $statement->execute([
-            ':id' => $objectiveEntity->getId()
-        ]);
+        $finish = $this->getObjectiveRepository()->finish($objectiveEntity);
 
-        if ($statement->rowCount()) {
-            return true;
+        if (!$finish) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_SAVE
+            ];
         }
 
-        return false;
+        return [
+            'error' => false
+        ];
+    }
+
+    public function delete($data)
+    {
+        $objectiveEntity = new ObjectiveEntity();
+        $objectiveEntity->setId($data['id']);
+
+        $remove = $this->getObjectiveRepository()->delete($objectiveEntity);
+
+        if (!$remove) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_DELETED
+            ];
+        }
+
+        return [
+            'error' => false
+        ];
+    }
+
+    public function restore($data)
+    {
+        $objectiveEntity = new ObjectiveEntity();
+        $objectiveEntity->setId($data['id']);
+
+        $restore = $this->getObjectiveRepository()->restore($objectiveEntity);
+
+        if (!$restore) {
+            return [
+                'error' => true,
+                'message' => Message::NOT_RESTORE
+            ];
+        }
+
+        return [
+            'error' => false
+        ];
     }
 
     /**
-     * @param ObjectiveEntity $objectiveEntity
-     * @return bool
+     * @return Validator
      */
-    public function restore(ObjectiveEntity $objectiveEntity)
+    public function getValidator(): Validator
     {
-        $statement = $this->getConn()->prepare("UPDATE objective SET deleted_at = null WHERE id = :id");
-
-        $statement->execute([
-            ':id' => $objectiveEntity->getId()
-        ]);
-
-        if ($statement->rowCount()) {
-            return true;
-        }
-
-        return false;
+        return $this->validator;
     }
 
     /**
-     * @param ObjectiveEntity $objectiveEntity
-     * @return bool
+     * @param Validator $validator
      */
-    public function finish(ObjectiveEntity $objectiveEntity)
+    public function setValidator(Validator $validator): void
     {
-        $statement = $this->getConn()->prepare("UPDATE objective SET status = :status WHERE id = :id");
+        $this->validator = $validator;
+    }
 
-        $statement->execute([
-            ':status' => $objectiveEntity->getStatus(),
-            ':id' => $objectiveEntity->getId()
-        ]);
+    /**
+     * @return ObjectiveRepository
+     */
+    public function getObjectiveRepository(): ObjectiveRepository
+    {
+        return $this->objectiveRepository;
+    }
 
-        if ($statement->rowCount()) {
-            return true;
-        }
-
-        return false;
+    /**
+     * @param ObjectiveRepository $objectiveRepository
+     */
+    public function setObjectiveRepository(ObjectiveRepository $objectiveRepository): void
+    {
+        $this->objectiveRepository = $objectiveRepository;
     }
 }

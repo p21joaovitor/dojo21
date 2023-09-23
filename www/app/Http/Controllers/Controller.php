@@ -21,7 +21,7 @@ abstract class Controller
      * Função responsavel por gerenciar a view que vai ser exibida
      * @param string $view
      * @param array $args
-     * @return void
+     * @return mixed
      */
     protected function view(string $view, array $args = [])
     {

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
+
 class UserRepository extends Repository
 {
     /**
@@ -17,5 +19,28 @@ class UserRepository extends Repository
         ]);
 
         return $statement->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param User $user
+     * @return boolean
+     */
+    public function save(User $user)
+    {
+        $passwordEncryt = md5($user->getPassword());
+
+        /** @var $pdoConnection PDO */
+        $statement = $this->getConn()->prepare("INSERT INTO user (name, email, password) values (:name, :email, :password)");
+        $execute = $statement->execute([
+            ':name' => $user->getName(),
+            ':email' =>  $user->getEmail(),
+            ':password' => $passwordEncryt
+        ]);
+
+        if (!$execute) {
+            return false;
+        }
+
+        return true;
     }
 }

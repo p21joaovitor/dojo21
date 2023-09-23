@@ -4,6 +4,14 @@ let Login = (() => {
             event.preventDefault();
             let loginForm = $('#login_form').serialize();
             let responseDiv = $("#response");
+            responseDiv.empty();
+
+            if (!validatorEmail(email.value)) {
+                responseDiv.removeClass('d-none');
+                responseDiv.addClass('bg-danger');
+                responseDiv.append('Favor fornecer um e-mail valido!');
+                return;
+            }
 
             $.ajax({
                 url: 'auth/authenticate',
@@ -19,7 +27,6 @@ let Login = (() => {
                         return;
                     }
                     window.location.href = '/home';
-                    return;
                 }
             });
         });
@@ -29,6 +36,12 @@ let Login = (() => {
 
             window.location.href = '/user/register';
         })
+
+        function validatorEmail(email)
+        {
+            let regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+            return regex.test(email);
+        }
     }
 
     return {

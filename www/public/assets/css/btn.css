@@ -1,0 +1,48 @@
+.btn-group {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    padding: 5px;
+}
+
+.btn {
+    background-color: #22b8f5;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    margin: 7px;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #00709e
+}
+
+.btn-danger {
+    background-color: #f57d22;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    margin: 7px;
+    font-size: 16px;
+}
+
+.btn-danger:hover {
+    background-color: #f56e0f
+}
+
+.btn-success {
+    background-color: #20851a;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    margin: 7px;
+    font-size: 16px;
+}
+
+.btn-success:hover {
+    background-color: #165b12
+}

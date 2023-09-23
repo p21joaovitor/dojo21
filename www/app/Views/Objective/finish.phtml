@@ -3,14 +3,14 @@
     <section class="container mt-20 row">
         <div class="card mt-200">
             <div class="card-alert d-none" id="response"></div>
-            <input type="hidden" value="<?php echo $args['objective'][0]['id']?>" name="id" id="objective_id">
+            <input type="hidden" value="<?php echo $args['objective']['id']?>" name="id" id="objective_id">
             <h2>Finalizando o objetivo</h2>
-            <p><b>Título:</b> <?php echo $args['objective'][0]['title'] ?></p>
+            <p><b>Título:</b> <?php echo $args['objective']['title'] ?></p>
             <p>Deseja realmente finalizar o objetivo?</p>
 
             <div class="btn-group text-center">
                 <a href="#" id="btn_finish_objective" class="btn-success">Sim</a>
-                <a href="/objective" class="btn">Não</a>
+                <a href="/objective-views" class="btn">Não</a>
             </div>
 
         </div>

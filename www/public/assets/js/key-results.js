@@ -3,6 +3,7 @@ let KeyResult = (() => {
         $('#btn_register_key_result').on( "click", function() {
             event.preventDefault();
             let keyResultForm = $('#key_result_form').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/key-result/save',
@@ -10,15 +11,15 @@ let KeyResult = (() => {
                 data: keyResultForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
-                    window.location.href = '/key-result/list/' + response.objectiveId;
-                    return;
+                    window.location.href = '/key-result-views/list/' + response.objectiveId;
                 }
             });
         });
@@ -26,6 +27,7 @@ let KeyResult = (() => {
         $('#btn_edit_key_result').on( "click", function() {
             event.preventDefault();
             let keyResultForm = $('#key_result_form').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/key-result/update',
@@ -33,19 +35,18 @@ let KeyResult = (() => {
                 data: keyResultForm,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    $("#response").removeClass('d-none');
-                    $("#response").addClass('bg-success');
-                    $("#response").append(response.message);
-                    return;
-                    return;
+                    responseDiv.removeClass('d-none');
+                    responseDiv.addClass('bg-success');
+                    responseDiv.append(response.message);
                 }
             });
         });
@@ -53,6 +54,7 @@ let KeyResult = (() => {
         $('#btn_remove_key_result').on( "click", function() {
             event.preventDefault();
             let keyResultId = $('#key_result_id').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/key-result/delete',
@@ -60,16 +62,16 @@ let KeyResult = (() => {
                 data: keyResultId,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    window.location.href = '/key-result/list/' + response.objectiveId;
-                    return;
+                    window.location.href = '/key-result-views/list/' + response.objectiveId;
                 }
             });
         });
@@ -77,6 +79,7 @@ let KeyResult = (() => {
         $('#btn_restore_key_result').on( "click", function() {
             event.preventDefault();
             let keyResultId = $('#key_result_id').serialize();
+            let responseDiv = $("#response");
 
             $.ajax({
                 url: '/key-result/restore',
@@ -84,16 +87,16 @@ let KeyResult = (() => {
                 data: keyResultId,
                 success: function (data) {
                     let response = JSON.parse(data);
-                    $("#response").empty();
+                    responseDiv.empty();
+
                     if (response.result === 'error') {
-                        $("#response").removeClass('d-none');
-                        $("#response").addClass('bg-danger');
-                        $("#response").append(response.message);
+                        responseDiv.removeClass('d-none');
+                        responseDiv.addClass('bg-danger');
+                        responseDiv.append(response.message);
                         return;
                     }
 
-                    window.location.href = '/key-result/list/' + response.objectiveId;
-                    return;
+                    window.location.href = '/key-result-views/list/' + response.objectiveId;
                 }
             });
         });

@@ -2,7 +2,7 @@
 
 <section class="container mt-20">
     <div class="btn-group align-left">
-        <a href="/objective/newObjective" class="btn">Novo objetivo</a>
+        <a href="/objective-views/newObjective" class="btn">Novo objetivo</a>
     </div>
     <hr>
 
@@ -15,15 +15,15 @@
                 <p><b>Status: </b><?php echo $objective['status'] == 0 ? 'Em progresso' : 'Finalizado' ?></p>
                 <hr>
                 <div class="btn-group align-center">
-                    <a href="/key-result/list/<?php echo $objective['id'] ?>" class="btn">Detalhes</a>
-                    <a href="/objective/edit/<?php echo $objective['id'] ?>" class="btn">Editar</a>
-                    <a href="/objective/finishObjective/<?php echo $objective['id'] ?>" class="btn">Finalizar</a>
+                    <a href="/key-result-views/list/<?php echo $objective['id'] ?>" class="btn">Detalhes</a>
+                    <a href="/objective-views/edit/<?php echo $objective['id'] ?>" class="btn">Editar</a>
+                    <a href="/objective-views/finishObjective/<?php echo $objective['id'] ?>" class="btn">Finalizar</a>
                 </div>
                 <div class="btn-group align-center">
                     <?php if ($objective['deleted_at'] === null): ?>
-                        <a href="/objective/remove/<?php echo $objective['id'] ?>" class="btn-danger">Apagar</a>
+                        <a href="/objective-views/remove/<?php echo $objective['id'] ?>" class="btn-danger">Apagar</a>
                     <?php else: ?>
-                        <a href="/objective/restoreObjective/<?php echo $objective['id'] ?>" class="btn-danger">Restaurar</a>
+                        <a href="/objective-views/restoreObjective/<?php echo $objective['id'] ?>" class="btn-danger">Restaurar</a>
                     <?php endif;?>
                 </div>
 
