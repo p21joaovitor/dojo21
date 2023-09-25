@@ -4,6 +4,10 @@ namespace App\Repository;
 
 use App\Entity\User;
 
+/**
+ * @author Joao Vitor Botelho
+ * Classe responsavel pelas querys
+ */
 class UserRepository extends Repository
 {
     /**

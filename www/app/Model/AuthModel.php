@@ -7,6 +7,10 @@ use App\Repository\UserRepository;
 use App\Util\Message;
 use App\Util\Validator;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelo gerenciamento das regras
+ */
 class AuthModel extends Model
 {
     /**

@@ -5,6 +5,10 @@ namespace App\Repository;
 use App\Entity\DataBase;
 use PDO;
 
+/**
+ * @author Joao Vitor Botelho
+ * Classe pai responsavel pela comunicação com o banco de dados
+ */
 class Repository
 {
     private PDO $conn;

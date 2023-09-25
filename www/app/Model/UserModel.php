@@ -6,9 +6,11 @@ use App\Entity\DatabaseConnection;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Util\Message;
-use App\Util\Validator;
-use PDO;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pelo gerenciamento das regras
+ */
 class UserModel extends Model
 {
     /**

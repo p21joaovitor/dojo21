@@ -6,6 +6,12 @@ use App\Model\AuthModel;
 use App\Util\Message;
 use App\Util\Validator;
 
+/**
+ * Class Auth
+ * @author Joao Vitor Botelho
+ *
+ * Responsavel pela entrada e saida do usuario
+ */
 class Auth extends Controller
 {
     /**
@@ -23,6 +29,11 @@ class Auth extends Controller
         $this->setAuthModel(new AuthModel());
         $this->setValidator(new Validator());
     }
+
+    /**
+     * Realiza o login do usuario
+     * @return void
+     */
     public function authenticate()
     {
         $isPost = $_SERVER['REQUEST_METHOD'];
@@ -57,6 +68,10 @@ class Auth extends Controller
         ]);
     }
 
+    /**
+     * realiza a saida do usuario do sistema
+     * @return void
+     */
     public function logout()
     {
         if (session_status() === PHP_SESSION_ACTIVE) {

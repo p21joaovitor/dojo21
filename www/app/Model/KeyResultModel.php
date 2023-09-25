@@ -2,16 +2,14 @@
 
 namespace App\Model;
 
-use App\Entity\DatabaseConnection;
 use App\Entity\KeyResultEntity;
-use App\Entity\ObjectiveEntity;
 use App\Repository\KeyResultRepository;
 use App\Util\Message;
 use App\Util\Validator;
 
 /**
  * @author João Vitor Botelho
- * Classe responsavel pelo gerenciamento das querys
+ * Classe responsavel pelo gerenciamento das regras
  */
 class KeyResultModel extends Model
 {

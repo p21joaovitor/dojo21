@@ -4,6 +4,10 @@ namespace App\Repository;
 
 use App\Entity\ObjectiveEntity;
 
+/**
+ * @author Joao Vitor Botelho
+ * Classe responsavel pelas querys
+ */
 class ObjectiveRepository extends Repository
 {
     /**

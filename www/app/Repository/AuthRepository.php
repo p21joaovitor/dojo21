@@ -3,7 +3,8 @@
 namespace App\Repository;
 
 /**
- * AuthRepository
+ * @author Joao Vitor Botelho
+ * Classe responsavel pelas querys
  */
 class AuthRepository extends Repository
 {

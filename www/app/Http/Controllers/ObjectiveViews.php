@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Repository\ObjectiveRepository;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pela exibição das views do fluxo do objective do usuario
+ */
 class ObjectiveViews extends Controller
 {
     /**

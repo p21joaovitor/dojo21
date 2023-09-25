@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Repository\KeyResultRepository;
 use App\Repository\ObjectiveRepository;
 
+/**
+ * @author João Vitor Botelho
+ * Classe responsavel pela exibição das views do fluxo do key result do usuario
+ */
 class KeyResultViews extends Controller
 {
     /**

@@ -2,16 +2,14 @@
 
 namespace App\Model;
 
-use App\Entity\DatabaseConnection;
 use App\Entity\ObjectiveEntity;
 use App\Repository\ObjectiveRepository;
 use App\Util\Message;
 use App\Util\Validator;
-use PDO;
 
 /**
  * @author João Vitor Botelho
- * Classe de comunicação com o banco de dados
+ * Classe responsavel pelo gerenciamento das regras
  */
 class ObjectiveModel extends Model
 {
@@ -52,6 +50,10 @@ class ObjectiveModel extends Model
         ];
     }
 
+    /**
+     * @param ObjectiveEntity $objectiveEntity
+     * @return array|false[]
+     */
     public function update(ObjectiveEntity $objectiveEntity)
     {
         $objective = $this->getObjectiveRepository()->findObjective($objectiveEntity->getId());
@@ -102,6 +104,10 @@ class ObjectiveModel extends Model
         ];
     }
 
+    /**
+     * @param $data
+     * @return array|false[]
+     */
     public function delete($data)
     {
         $objectiveEntity = new ObjectiveEntity();
@@ -121,6 +127,10 @@ class ObjectiveModel extends Model
         ];
     }
 
+    /**
+     * @param $data
+     * @return array|false[]
+     */
     public function restore($data)
     {
         $objectiveEntity = new ObjectiveEntity();

@@ -5,8 +5,16 @@ namespace App\Repository;
 use App\Entity\KeyResultEntity;
 use PDO;
 
+/**
+ * @author Joao Vitor Botelho
+ * Classe responsavel pelas querys
+ */
 class KeyResultRepository extends Repository
 {
+    /**
+     * @param KeyResultEntity $keyResultEntity
+     * @return bool
+     */
     public function save(KeyResultEntity $keyResultEntity)
     {
         /** @var $pdoConnection PDO */

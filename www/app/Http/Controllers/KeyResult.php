@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Entity\KeyResultEntity;
 use App\Model\KeyResultModel;
 use App\Util\Message;
 use App\Util\Validator;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Entity\ObjectiveEntity;
 use App\Model\ObjectiveModel;
 use App\Util\Message;
 use App\Util\Validator;
